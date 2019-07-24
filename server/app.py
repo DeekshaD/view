@@ -8,6 +8,7 @@ import glob
 
 app = Flask(__name__)
 api = Api(app)
+
 class FetchData(Resource):
     def get(self, date):
         data = pd.read_csv('../data/Sensor_Weather_Data_Challenge.csv', index_col = 0, parse_dates = True)
@@ -16,6 +17,10 @@ class FetchData(Resource):
         day_0 = day.iloc[:,0]
         return day_0.to_json(orient="index")
 
+
 api.add_resource(FetchData, '/main/date=<date>')
+@app.route('/main')
+def selectDate():
+    return render_template('index.html')
 if __name__ == "__main__":
     app.run(debug = True)

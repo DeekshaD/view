@@ -1,0 +1,21 @@
+<html>
+	<head>
+		<script src="https://d3js.org/d3.v5.min.js"></script>
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<link rel="stylesheet" href="/resources/demos/style.css">
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script>
+				    $( function() {
+					        $( "#datepicker" ).datepicker();
+					      } );
+  </script>
+	<script src="{{ url_for('static', filename = "index.js")}}"></script>
+	</head>
+	<body>
+		<form class = 'user-input' >
+		<p>Date: <input type="text" id="datepicker" name='date'></p>
+		<input id="submit" type="submit" value="Submit">
+		</form>
+	</body>
+</html>
