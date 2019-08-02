@@ -22,6 +22,7 @@ class FetchData(Resource):
         day = {}
         self.feature = int(feature)
         self.bandwidth = bandwidth
+
         day = data[date]
         df_day = data[date].iloc[:, self.feature]
         df_month = data[date[0:7]].iloc[:, self.feature]
@@ -31,10 +32,12 @@ class FetchData(Resource):
                 "median": np.median(df_day),
                 "std": np.std(df_day),
                 "max": np.max(df_day)}
-        cols = ['temperature', 'humidity', 'wind_direction', 'storm_direction']
+        cols = ['temperature', 'humidity', 'visibility', 'wind_speed', 'wind_direction', 'storm_direction']
         
+        global_max = [100, 100, 15, 100, 360, 360]
         weather_data = day.loc[:, cols].describe()
-        weather_data.loc["max", :] = [100, 100, 360, 360]
+        weather_data.columns = ["Temperature", "Humidity", "Visibility", "Wind Speed", "Wind Direction","Storm Direction"]
+        weather_data.loc["global_max", :] = global_max
                 
         std = df_month.std()
         X_lim = [min(df_month.min(), df_day.min())- std, max(df_day.max(), df_month.max()) + std]

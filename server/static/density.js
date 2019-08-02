@@ -1,6 +1,6 @@
 //define scales, margin, area functions
 		var margin = {top: 20, right: 20, bottom: 150, left: 70},
-		    width = 960 - margin.right - margin.left,
+		    width = 900 - margin.right - margin.left,
 		    height = 600 - margin.top - margin.bottom;
 
 		var xScale = d3.scaleLinear().range([0, width]);
@@ -25,6 +25,7 @@
 		var div = d3.select("body").append("div")	
     .attr("class", "tooltip")				
     .style("opacity", 0);
+
 
 		//get data and plot
 		function drawPlot(url){
@@ -144,7 +145,7 @@
 			//display stats
 			var elem = svgtop.append("g")
 				.attr("class", "stats")
-				.attr("transform", "translate(0,0)");
+				.attr("transform", "translate(30,30)");
 			
 			var text = elem.selectAll("text")
 				.data(d3.values(data.stats))
@@ -152,7 +153,8 @@
 				.append("text")
 				.attr("x", function(d,i) {return i*190 + 60;})
 				.attr("y", 560)
-				.text(function(d) {return d.toFixed(2);});
+				.text(function(d) {return d.toFixed(2);})
+				.attr("font-size", 15);
 
 			var textname = elem.selectAll("text name")
 				.data(d3.keys(data.stats))
@@ -160,6 +162,7 @@
 				.append("text")
 				.attr("x", function(d,i) {return i*190 + 60;})
 				.attr("y", 530)
-				.text(function(d) {return d;});
+				.text(function(d) {return d;})
+				.attr("font-size", 15);
 
 	});};

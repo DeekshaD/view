@@ -6,7 +6,6 @@ jQuery(document).ready(function($){
 	drawPlot(url);
 	$('.user-input').on('submit', function(){
 		date = $("[name=date]").val(); 				       url = "http://127.0.0.1:5000/main/date="+date;
-		console.log(url);
 		drawArcs(url);
 		drawPlot(url);
 		return false;
