@@ -22,22 +22,34 @@ class FetchData(Resource):
         day = {}
         self.feature = int(feature)
         self.bandwidth = bandwidth
+        day = data[date]
         df_day = data[date].iloc[:, self.feature]
         df_month = data[date[0:7]].iloc[:, self.feature]
+        
         stats_day = {"min": np.min(df_day),
                 "mean": np.mean(df_day),
                 "median": np.median(df_day),
                 "std": np.std(df_day),
                 "max": np.max(df_day)}
+        cols = ['temperature', 'humidity', 'wind_direction', 'storm_direction']
+        
+        weather_data = day.loc[:, cols].describe()
+        weather_data.loc["max", :] = [100, 100, 360, 360]
                 
         std = df_month.std()
         X_lim = [min(df_month.min(), df_day.min())- std, max(df_day.max(), df_month.max()) + std]
         self.X_ax = np.linspace(X_lim[0], X_lim[1] ,1000)[:, np.newaxis]
+        
         #kernel density estimation
         df_kde = pd.DataFrame(data = {"x" : self.X_ax.flatten(), 
                       "m" : self.getKDE(df_month), 
                       "d" : self.getKDE(df_day)})
-        return {"x_lim" : X_lim, "stats": stats_day, "df" : df_kde.melt(id_vars="x").values.tolist()}
+        
+        return {"x_lim" : X_lim, 
+                "stats": stats_day, 
+                "df" : df_kde.melt(id_vars="x").values.tolist(),
+                "weather": weather_data.transpose().to_dict(orient="index")
+}
 
     def getKDE(self, df):
         vals = df.values.reshape((-1,1))

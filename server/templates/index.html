@@ -35,16 +35,16 @@
 	</head>
 	<body>
 		<div class="container">
-			<svg id="arcs"></svg>	
-		</div>	
-		<div class="container">
 			<br></br>
 			<form class = 'user-input' >
 				<div class="form-group">
-					Date: <input style="display: inline" type="text" id="datepicker" name='date'>
+					Date: <input style="display: inline" value="2019-03-25" type="text" id="datepicker" name='date'>
 			 		<button style="display: inline" type="submit" class="btn btn-primary">Submit</button>
 				</div>
 			</form>
+			<svg id="arcs"></svg>	
+		</div>	
+		<div class="container">
 
 			Feature: <select id="featureSelect" class="mdb-select md-form colorful-select dropdown-primary">
 				<option value="0" selected="selected">d1</option>
@@ -70,7 +70,7 @@
 		var arc_back = d3.arc()
 			.innerRadius(50)
 			.outerRadius(70)
-			.startAngle(function(d) {return d*tau; })
+			.startAngle(function(d) {return (-0.25+(d.mean/d.max))*tau; })
 			.endAngle(0.75*tau);
 
 		var svgArc = d3.select("#arcs")
@@ -78,29 +78,54 @@
 			.attr("height", height + margin.top + margin.bottom);
 		console.log(svgArc);
 
-		var angle = [-0.20, -0.1, 0.2, 0.3]
-
-		var svg = svgArc.selectAll("g")
-			.data(angle)
-			.enter()
-			.append("g")
-			.attr("transform", function(d, i) {return "translate("+ (i*200+160)+" ,200)";})
-			
-		var svg2 = svgArc.selectAll("g grey")
-			.data(angle)
-			.enter()
-			.append("g")
-			.attr("transform", function(d, i) {return "translate("+ (i*200+160)+" ,200)";})
+	
+		function drawArcs(url){
+			d3.json(url).then(function(data){
 		
-		svg.append("path")
-			.attr("class", "arc1")
-			.attr("d", arc_fore)
-			.style("fill", "orange");
+			d3.selectAll(".arc2").remove();
+			d3.selectAll(".text1").remove();
+			d3.selectAll(".text2").remove();
 
-		svg2.append("path")
-			.attr("class", "arc2")
-			.attr("d", arc_back)
-			.style("fill", "#ddd");
+			var svg = svgArc.selectAll("g")
+				.data(d3.values(data.weather))
+				.enter()
+				.append("g")
+				.attr("transform", function(d, i) {return "translate("+ (i*200+160)+" ,200)";})
+			
+			var svg2 = svgArc.selectAll("g grey")
+				.data(d3.values(data.weather))
+				.enter()
+				.append("g")
+				.attr("transform", function(d, i) {return "translate("+ (i*200+160)+" ,200)";})
+			
+			var svg3 = svgArc.selectAll("g text")
+				.data(d3.keys(data.weather))
+				.enter()
+				.append("g")
+				.attr("transform", function(d, i) {return "translate("+ (i*200+120)+" ,320)";})
+			var svg4 = svgArc.selectAll("g text-no")
+				.data(d3.values(data.weather))
+				.enter()
+				.append("g")
+				.attr("transform", function(d, i) {return "translate("+ (i*200+140)+" ,200)";})
+			svg.append("path")
+				.attr("class", "arc1")
+				.attr("d", arc_fore)
+				.style("fill", "orange");
+
+			svg2.append("path")
+				.attr("class", "arc2")
+				.attr("d", arc_back)
+				.style("fill", "#ddd");
+
+			svg3.append("text")
+				.attr("class", "text1")
+				.text(function(d) {return d;})
+
+			svg4.append("text")
+				.attr("class", "text2")
+				.text(function(d) {return d.mean.toFixed(2);})
+			})};
 		
 	</script>
 	<script src="{{ url_for('static', filename = "density.js")}}"></script>
