@@ -37,6 +37,17 @@ var div = d3.select("body").append("div")
 		.attr("class", "tooltip")
 		.style("opacity", 0);
 
+function getBack(d, i){
+	return d3.arc()
+	.innerRadius(radius.inner)
+	.outerRadius(radius.outer)
+	.startAngle((-0.25+(d.mean/d.global_max))*tau)
+	.endAngle(0.75*tau);
+
+
+}
+
+
 //Functions to handle mouse events
 function handleMouseOver(d, i){
 	div.transition()
@@ -56,17 +67,51 @@ function handleMouseOut(d, i){
 }
 
 //returns X and Y position for elements(arcs, texts)
-function getY(d){
-	if(d<3)
+function getY(i){
+	if(i<3)
 		return arc.starty;
 	else
 		return 2*arc.starty+arc.padding;
 }
 
-function getX(d){
-	return ((d%3)*arc.startx)+arc.spacingx;
+function getX(i){
+	return ((i%3)*arc.startx)+arc.spacingx;
 }
 
+function getText(d,i){
+
+	//return mean if not direction
+	if(i < 4){
+		return d.mean.toFixed(2);
+	
+	}
+	//return compass direction for wind and storm
+	else{
+		var compass_dir = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW","N"]	
+		var idx = d.mean % 360;
+		idx = Math.round(idx/22.5);
+		return compass_dir[idx];
+	}
+}
+
+function getStartAngle(d,i){
+
+	if(i < 4)
+		return (-0.25+(d.mean/d.global_max))*tau; 
+	else
+	{
+		var start = (d.mean*Math.PI/180);
+		return start-tau+(tau/100);
+	}
+}
+function getEndAngle(d,i){
+	if(i<4)
+		return 0.75*tau;
+	else{
+		var end = (d.mean*Math.PI/180);
+		return end-(tau/100);
+	}
+}
 //read data and append to svg
 function drawArcs(url){
 	d3.json(url).then(function(data){
@@ -93,13 +138,17 @@ function drawArcs(url){
 	svg.attr("transform", function(d, i) {return "translate("+getX(i)+","+getY(i)+")";})
 		.append("path")
 		.attr("class", "arc2")
-		.attr("d", arc_back)
+		.attr("d", d3.arc()
+				.innerRadius(radius.inner)
+				.outerRadius(radius.outer)
+				.startAngle(function(d,i) {return getStartAngle(d,i);})
+				.endAngle(function(d,i) {return getEndAngle(d,i);}))
 		.style("fill", "#ddd");
 
 	svg.attr("transform", function(d, i) {return "translate("+getX(i)+","+getY(i)+")";})
 		.append("text")
 		.attr("class", "text2")
-		.text(function(d) {return d.mean.toFixed(2);})
+		.text(function(d, i) {return getText(d, i);})
 		.attr("text-anchor", "middle");
 
 	//define group element for text labels
@@ -110,17 +159,18 @@ function drawArcs(url){
 		.attr("class", "g-keys")
 		.attr("transform", function(d, i) {return "translate("+getX(i)+","+(getY(i)-100)+")";});
 	
-	//define and append elements to display min max and mean for arcs
+	svgKeys.append("text")
+		.attr("class", "text1")
+		.text(function(d) {return d;})
+		.attr("text-anchor", "middle");
+
+	//define and append elements to display min max for arcs
 	var svg3 = svgArc.selectAll("g text-minmax")
 		.data(d3.values(data.weather))
 		.enter()
 		.append("g")
 		.attr("transform", function(d, i) {return "translate("+getX(i)+","+(getY(i)+100)+")";})
 		.attr("class", "g-minmax");
-	svgKeys.append("text")
-		.attr("class", "text1")
-		.text(function(d) {return d;})
-		.attr("text-anchor", "middle");
 
 
 	svg3.append("text")

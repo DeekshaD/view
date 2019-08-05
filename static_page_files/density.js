@@ -22,9 +22,10 @@ var svg = svgtop.append("g")
 	      "translate("+ margin.left + ',' + margin.top + ")");
 
 //append a div for tooltip on hover 
-var div = d3.select("body").append("div")	
-", "tooltip")				
-ity", 0);
+var div = d3.select("body")
+	.append("div")	
+	.attr("class", "tooltip")
+	.attr("opacity", 0);
 
 
 //get data and plot
@@ -38,7 +39,6 @@ function drawPlot(url){
 			d[2] = +d[2];
 });
 	//remove any previous elements
-	console.log(df);
 	d3.selectAll(".area").remove();
 	d3.selectAll(".xaxis").remove();
 	d3.selectAll(".yaxis").remove();

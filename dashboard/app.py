@@ -12,6 +12,7 @@ import pickle
 
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0 # used to make sure JS files update
 api = Api(app)
 
 #get feature calumns for initial load
@@ -79,9 +80,9 @@ class FetchData(Resource):
         return np.exp(prop)
 
 
-api.add_resource(FetchData, '/main/date=<date>',
-                            '/main/date=<date>/feature=<feature>')
-@app.route('/main')
+api.add_resource(FetchData, '/date=<date>',
+                            '/date=<date>/feature=<feature>')
+@app.route('/')
 def selectDate():
     return render_template('index.html', len = len(features), features = features)
 
