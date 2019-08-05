@@ -1,0 +1,38 @@
+Steps to run the application:
+
+To simple view the static page, open static_page.html in any browser.
+
+For interactive dashboard please do the following:
+1. Clone the repo, navigate to view/dashboard/, run application
+	$ git clone https://github.com/DeekshaD/view.git
+	$ cd view/dashboard/
+$ python app.py
+2. Navigate to http://127.0.0.1:5000/ on browser(firefox or chrome)
+-------------------------------------
+Tools used:
+
+Flask, D3.js, jQuery
+-------------------------------------
+What's on the page?
+
+The page initially loads the visualization for the date 2019-03-25, feature d1. There are two kinds of visualizations here, the day highlights and density plots.
+The date field on top of the page can be used to pick a date, the visualizations will reload on submit.(takes roughly 2 seconds to redraw elements)
+
+Day Highlights:
+
+In this section the user will get a quick summary of the weather. It displays the mean of weather features, using progress gauges and compass(for direction features). Under each gauge we can find the minimum and maximum value of the feature for the selected day. 
+
+Task: Present summary 
+Marks and channels : Area, line
+Attributes: Temperature, humidity, visibility, wind speed - numeric
+	      Storm direction, wind direction - numeric(angle), categorical(direction)
+Interactive viz component: Hover on the filled part(orange) displays a tooltip showing average.
+
+Density plots: 
+
+A feature can be selected from the dropdown menu, and the respective density plot will be displayed. The plot overlays two density plots, for the selected day and for the month of that day. It would help us see how the feature distribution of the day compares with that of its month. I’ve used a line mark to represent the mean of the day density plot. Below the plots I have displayed the statistical measures for the day.
+
+Task: Discover and compare distributions.
+Marks used: Area, line
+Attributes: Selected feature-continuous numeric
+Interactive viz component: Hover on the mean line, to display a tooltip showing mean.
